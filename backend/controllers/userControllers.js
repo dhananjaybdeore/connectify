@@ -42,8 +42,14 @@ const registerUser = asyncHandler(async (req, res) => {
 // function to login a user
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email });
-  console.log(user);
+  if (!user) {
+    res.status(401);
+    throw new Error(
+      "Couldn't found an account with this email. Please Register!"
+    );
+  }
   if (user && (await user.matchPassword(password))) {
     res.status(201).json({
       _id: user._id,

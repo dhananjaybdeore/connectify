@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   FormControl,
@@ -7,22 +8,167 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 const Signup = () => {
+  //*states for show - hide password button functionality
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [confirmpassword, setConfirmpassword] = useState();
-  const [pic, setPic] = useState();
+
+  //* form data storage states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmpassword] = useState("");
+  const [pic, setPic] = useState("");
+
+  //* state for determining if there is any action taking place at backend
+  //* when loading is true, submit button will be disabled and there will be loading animation
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
+  const navigate = useNavigate();
   const handleShowHide = (type) => {
     if (type === "password") setShowPassword(!showPassword);
     else setShowConfirmPassword(!showConfirmPassword);
   };
-  const postDetails = (pics) => {};
-  const submitHandler = () => {};
+
+  //*Function to upload image in cloudinary
+  const uploadProfileImage = (pics) => {
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please select an image",
+
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "connectify");
+      data.append("cloud_name", "dhdxz3msy");
+      fetch("https://api.cloudinary.com/v1_1/dhdxz3msy/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setPic(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please select jpeg or png file",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      setLoading(false);
+      return;
+    }
+  };
+
+  const submitHandler = async () => {
+    setLoading(true);
+    //*Condition for checking if any field is empty
+    if (!name || !email || !password || !confirmpassword) {
+      toast({
+        title: "Please Fill all the fields",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    //*Condition for checking both passwords are same or not
+    if (password !== confirmpassword) {
+      toast({
+        title: "Both passwords are not matching",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      //?Making an API call to register the user into the database
+      axios
+        .post(
+          "/api/user",
+          {
+            name,
+            email,
+            password,
+            pic,
+          },
+          config
+        )
+        .then((data) => {
+          toast({
+            title: "Registration Successfull",
+            status: "success",
+            duration: 2000,
+            isClosable: true,
+            position: "bottom",
+          });
+          // ?localStorage.setItem("userInfo", JSON.stringify(data));
+          setLoading(false);
+          toast({
+            title: "Redirecting to Login Page",
+            status: "loading",
+            duration: 2000,
+            isClosable: false,
+            position: "bottom",
+          });
+          //! To load the login page
+          setTimeout(() => {
+            window.location.reload(); //!have to find alternative later
+          }, 2000);
+          navigate("/");
+        })
+        .catch((error) => {
+          toast({
+            title: error.response.data,
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        });
+    } catch (error) {
+      toast({
+        title: error.response.data,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
   return (
     <VStack spacing={4}>
       <FormControl id="first-name" isRequired>
@@ -32,6 +178,7 @@ const Signup = () => {
           onChange={(e) => {
             setName(e.target.value);
           }}
+          value={name}
         ></Input>
       </FormControl>
       <FormControl id="email" isRequired>
@@ -41,6 +188,7 @@ const Signup = () => {
           onChange={(e) => {
             setEmail(e.target.value);
           }}
+          value={email}
         ></Input>
       </FormControl>
       <FormControl id="password" isRequired>
@@ -52,6 +200,7 @@ const Signup = () => {
             onChange={(e) => {
               setPassword(e.target.value);
             }}
+            value={password}
           />
           <InputRightElement width="4.5rem">
             <Button
@@ -74,6 +223,7 @@ const Signup = () => {
             onChange={(e) => {
               setConfirmpassword(e.target.value);
             }}
+            value={confirmpassword}
           />
           <InputRightElement width="4.5rem">
             <Button
@@ -94,7 +244,7 @@ const Signup = () => {
           type="file"
           accept="image/*"
           onChange={(e) => {
-            postDetails(e.target.files[0]);
+            uploadProfileImage(e.target.files[0]);
           }}
         ></Input>
       </FormControl>
@@ -103,6 +253,7 @@ const Signup = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Sign Up
       </Button>
