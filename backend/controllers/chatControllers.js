@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
 
-//? Controller for creating 1:1 chats
+//? Controller for creating 1:1 chats, and if there is already a chat, access it
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
@@ -70,4 +70,56 @@ const fetchChat = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { accessChat, fetchChat };
+//? Controller for creating Group Chat
+const createGroupChat = asyncHandler(async (req, res) => {
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "Please fill all the fields" });
+  }
+  var users = JSON.parse(req.body.users);
+
+  if (users.length < 1) {
+    return res
+      .status(400)
+      .send("More than 1 user shoud be added to create a group chat");
+  }
+  //*Adding currently logged in user in the array
+  users.push(req.user);
+  try {
+    const groupChat = await Chat.create({
+      chatName: req.body.name,
+      users: users,
+      isGroupChat: true,
+      groudAdmin: req.user,
+    });
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+    res.status(200).json(fullGroupChat);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+//? Controller to rename the Group Chat
+const renameGroup = asyncHandler(async (req, res) => {
+  const { chatId, chatName } = req.body;
+  const updatedChat = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      chatName: chatName,
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updatedChat) {
+    res.status(400);
+    throw new Error("Chat not found");
+  } else {
+    res.json(updatedChat);
+  }
+});
+module.exports = { accessChat, fetchChat, createGroupChat, renameGroup };
