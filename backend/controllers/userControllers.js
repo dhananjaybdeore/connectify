@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 
 const generateToken = require("../config/generateToken");
 
+//* function to register a user
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
   //Checking if there is empty field
@@ -32,14 +33,14 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       pic: user.pic,
-      token: generateToken.generateToken(user._id),
+      // token: generateToken.generateToken(user._id),
     });
   } else {
     res.status(400);
     throw new Error("Failed to create new user");
   }
 });
-// function to login a user
+//* function to login a user
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -55,10 +56,40 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      token: generateToken.generateToken(user._id),
     });
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
 });
-module.exports = { registerUser, authUser };
+
+//* function to get all users
+const allUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          //? or is used to search by name or email field
+          {
+            name: {
+              $regex: req.query.search,
+              $options: "i",
+            },
+          },
+          {
+            email: {
+              $regex: req.query.search,
+              $options: "i",
+            },
+          },
+        ],
+      }
+    : {};
+  // ! Finding users with the entered search content
+  // ? find({ _id: { $ne: req.user._id } : this will exclude the logged in user from search results
+  const users = await User.find(keyword)
+    .find({ _id: { $ne: req.user._id } })
+    .select("-password");
+  res.send(users);
+});
+module.exports = { registerUser, authUser, allUsers };
