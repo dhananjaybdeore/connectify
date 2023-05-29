@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
+
+//? Controller for creating 1:1 chats
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
@@ -45,4 +47,27 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { accessChat };
+//? Controller for accessing all the chats of the logged in user
+const fetchChat = asyncHandler(async (req, res) => {
+  try {
+    //Validating the logged in user
+
+    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password")
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 })
+      .then(async (results) => {
+        results = await User.populate(results, {
+          path: "latestMessage.sender",
+          select: " name, email, pic ",
+        });
+        res.status(200).send(results);
+      });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+});
+
+module.exports = { accessChat, fetchChat };
