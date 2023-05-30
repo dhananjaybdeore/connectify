@@ -48,7 +48,7 @@ const authUser = asyncHandler(async (req, res) => {
   if (!user) {
     res.status(401);
     throw new Error(
-      "Couldn't found an account with this email. Please Register!"
+      "Couldn't find an account with this email. Please Register!"
     );
   }
   if (user && (await user.matchPassword(password))) {
@@ -56,6 +56,7 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      pic: user.pic,
       token: generateToken.generateToken(user._id),
     });
   } else {

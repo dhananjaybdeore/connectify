@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
 import {
@@ -11,12 +11,22 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    // If user is already logged in, we are redirecting him to chats page
+    if (userInfo) {
+      console.log("User already logged in");
+      navigate("/chats");
+    }
+  }, [navigate]);
   return (
     <Container maxW="xl" centerContent>
       <Box
-        d="flex"
+        display="flex"
         justifyContent="center"
         p="3"
         bg="white"

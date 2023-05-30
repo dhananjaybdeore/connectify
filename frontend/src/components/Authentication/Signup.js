@@ -22,7 +22,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
-  const [pic, setPic] = useState("");
+  const [pic, setPic] = useState();
 
   //* state for determining if there is any action taking place at backend
   //* when loading is true, submit button will be disabled and there will be loading animation

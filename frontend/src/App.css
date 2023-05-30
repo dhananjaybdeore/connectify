@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400&display=swap");
 #root {
   min-height: 100vh;
-  display: flex;
+  /* display: flex; */
   background: linear-gradient(#2193b0, #6dd5ed);
 }
