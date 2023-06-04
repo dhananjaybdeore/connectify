@@ -30,7 +30,10 @@ const ProfileModal = ({ user, children }) => {
       )}
       <Modal size="lg" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent height="410px" p="10px">
+        <ModalContent
+          // height="410px"
+          p="10px"
+        >
           <ModalHeader
             fontSize="40px"
             fontFamily="Work sans"
@@ -51,6 +54,10 @@ const ProfileModal = ({ user, children }) => {
               alt={user.data.name}
               borderRadius="full"
               boxSize="150px"
+              objectFit="scale-down"
+              // backgroundSize="cover"
+              bgSize="cover"
+              border="2px"
             />
             <Text
               fontFamily="Work sans"
