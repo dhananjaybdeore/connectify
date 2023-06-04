@@ -1,5 +1,6 @@
 import { ViewIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
   Button,
   IconButton,
   Image,
@@ -49,16 +50,28 @@ const ProfileModal = ({ user, children }) => {
             justifyContent="center"
             alignItems="center"
           >
-            <Image
+            {/* <Image
               src={user.data.pic}
               alt={user.data.name}
+              name={user.data.name}
               borderRadius="full"
               boxSize="150px"
               objectFit="scale-down"
               // backgroundSize="cover"
               bgSize="cover"
               border="2px"
-            />
+            /> */}
+            <Avatar
+              size="xl"
+              cursor="pointer"
+              name={user.data.name}
+              alt={user.data.name}
+              src={user.data.pic}
+              objectFit="scale-down"
+              borderRadius="full"
+              border="2px"
+              boxSize="150px"
+            ></Avatar>
             <Text
               fontFamily="Work sans"
               fontSize={{ base: "28px", md: "30px" }}

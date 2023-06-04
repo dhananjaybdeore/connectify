@@ -41,7 +41,7 @@ const Login = () => {
         status: "warning",
         duration: 4000,
         isClosable: true,
-        position: "bottom",
+        position: "top",
       });
       return;
     }
@@ -68,7 +68,7 @@ const Login = () => {
             status: "success",
             duration: 4000,
             isClosable: true,
-            position: "bottom",
+            position: "top-right",
           });
           setLoading(false);
           localStorage.setItem("UserInfo", JSON.stringify(data));

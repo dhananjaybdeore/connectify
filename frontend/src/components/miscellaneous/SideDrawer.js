@@ -38,15 +38,18 @@ const SideDrawer = () => {
   const [loadingChat, setLoadingChat] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setUser, setSelectedChat, chats, setChats } = ChatState();
   const navigate = useNavigate();
   const toast = useToast();
   const logoutHandler = () => {
     localStorage.removeItem("UserInfo");
+    //! Clearing all the states before while logging out to protect sensitive information of the user
+    setChats([]);
+    setSelectedChat();
+    setUser();
     navigate("/");
   };
   const handleSearch = async () => {
-    // console.log(user);
     if (!search) {
       toast({
         title: "Please enter something in search",
@@ -88,33 +91,7 @@ const SideDrawer = () => {
   };
 
   //? this function opens a chat on the clicked user or create a new chat if chat between the two users does not exists
-  // const accessChat = async (userId) => {
-  //   try {
-  //     setLoadingChat(true);
-  //     console.log(user.data.token);
-  //     const config = {
-  //       headers: {
-  //         "Content-type": "application/json",
-  //         Authorization: `Bearer ${user.data.token}`,
-  //       },
-  //     };
-  //     const { data } = await axios.post("/api/chat", { userId }, config);
-  //     // if (!chats.find((c) => c._id === data._id)) setChats(data, ...chats);
-  //     setLoading(false);
-  //     setSelectedChat(data);
-  //     onClose();
-  //     console.log(data);
-  //   } catch (error) {
-  //     toast({
-  //       title: "Error",
-  //       description: error.message,
-  //       status: "warning",
-  //       duration: 4000,
-  //       isClosable: true,
-  //       position: "top-left",
-  //     });
-  //   }
-  // };
+
   const accessChat = async (userId) => {
     console.log(userId);
 
