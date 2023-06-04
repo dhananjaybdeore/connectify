@@ -78,7 +78,7 @@ const GroupChatModal = ({ children }) => {
 
   //? Function to create a group chat
   const handleSubmit = async () => {
-    if (!groupChatName || !selectedUsers) {
+    if (!groupChatName || !selectedUsers.length) {
       toast({
         title: "Please fill all the fields",
         status: "warning",
@@ -104,6 +104,8 @@ const GroupChatModal = ({ children }) => {
       );
       setChats([data, ...chats]);
       onClose();
+      setGroupChatName("");
+      setSelectedUsers([]);
       toast({
         title: "New Group Chat created successfully",
         status: "success",
