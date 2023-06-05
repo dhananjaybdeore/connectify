@@ -272,7 +272,12 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         onClick={onOpen}
       />
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        fontFamily="Work sans"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
@@ -294,7 +299,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
                 <Text
                   backgroundColor="green"
                   px={2}
-                  py={1}
+                  py={1.5}
                   borderRadius="lg"
                   m={1}
                   mb={2}
@@ -342,6 +347,10 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
                 backgroundColor="teal"
                 color="white"
                 ml={1}
+                _hover={{
+                  backgroundColor: "teal",
+                  color: "white",
+                }}
                 isLoading={renameLoading}
                 onClick={handleRename}
               >
