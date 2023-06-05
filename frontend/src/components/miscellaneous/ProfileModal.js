@@ -4,6 +4,7 @@ import {
   Button,
   IconButton,
   Image,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -41,7 +42,7 @@ const ProfileModal = ({ user, children }) => {
             display="flex"
             justifyContent="center"
           >
-            {user.data.name}
+            {user.name}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -51,9 +52,9 @@ const ProfileModal = ({ user, children }) => {
             alignItems="center"
           >
             {/* <Image
-              src={user.data.pic}
-              alt={user.data.name}
-              name={user.data.name}
+              src={user .pic}
+              alt={user .name}
+              name={user .name}
               borderRadius="full"
               boxSize="150px"
               objectFit="scale-down"
@@ -61,22 +62,25 @@ const ProfileModal = ({ user, children }) => {
               bgSize="cover"
               border="2px"
             /> */}
-            <Avatar
-              size="xl"
-              cursor="pointer"
-              name={user.data.name}
-              alt={user.data.name}
-              src={user.data.pic}
-              objectFit="scale-down"
-              borderRadius="full"
-              border="2px"
-              boxSize="150px"
-            ></Avatar>
+            <Link href={user.pic} isExternal>
+              <Avatar
+                size="xl"
+                cursor="pointer"
+                name={user.name}
+                alt={user.name}
+                src={user.pic}
+                objectFit="scale-down"
+                borderRadius="full"
+                border="2px"
+                boxSize="150px"
+              ></Avatar>
+            </Link>
+
             <Text
               fontFamily="Work sans"
               fontSize={{ base: "28px", md: "30px" }}
             >
-              Email:<span style={{ color: "gray" }}> {user.data.email}</span>
+              Email:<span style={{ color: "gray" }}> {user.email}</span>
             </Text>
           </ModalBody>
 

@@ -26,6 +26,7 @@ import UserBadgeItem from "../userAvatar/UserBadgeItem";
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const [chatLoading, setChatLoading] = useState(false);
   const [groupChatName, setGroupChatName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -89,6 +90,7 @@ const GroupChatModal = ({ children }) => {
       return;
     }
     try {
+      setChatLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${user.data.token}`,
@@ -106,6 +108,7 @@ const GroupChatModal = ({ children }) => {
       onClose();
       setGroupChatName("");
       setSelectedUsers([]);
+      setChatLoading(false);
       toast({
         title: "New Group Chat created successfully",
         status: "success",
@@ -114,6 +117,8 @@ const GroupChatModal = ({ children }) => {
         position: "top",
       });
     } catch (error) {
+      setChatLoading(false);
+
       toast({
         title: "Error occured",
         description: error.message,
@@ -207,7 +212,12 @@ const GroupChatModal = ({ children }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleSubmit}
+              isLoading={chatLoading}
+            >
               Create Chat
             </Button>
           </ModalFooter>

@@ -83,13 +83,14 @@ const createGroupChat = asyncHandler(async (req, res) => {
       .send("More than 1 user shoud be added to create a group chat");
   }
   //*Adding currently logged in user in the array
+
   users.push(req.user);
   try {
     const groupChat = await Chat.create({
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
-      groudAdmin: req.user,
+      groupAdmin: req.user,
     });
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
       .populate("users", "-password")
