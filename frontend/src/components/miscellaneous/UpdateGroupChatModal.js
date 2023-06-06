@@ -23,7 +23,7 @@ import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import axios from "axios";
 import UserListItem from "../userAvatar/UserListItem";
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, selectedChat, setSelectedChat } = ChatState();
   const [loading, setLoading] = useState(false);
@@ -70,6 +70,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       });
       setSelectedChat(data);
       setFetchAgain(!fetchAgain);
+      fetchMessages(); //! don't know the significance, should be removed and test the app
       setLoading(false);
     } catch (error) {
       toast({
@@ -117,7 +118,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         position: "top",
       });
       setSelectedChat();
-
+      fetchMessages();
       setFetchAgain(!fetchAgain);
       setLoading(false);
     } catch (error) {
@@ -322,10 +323,10 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
               >
                 Members:
                 {selectedChat.users.map((user) => (
-                  <Box width="fit-content">
+                  <Box width="fit-content" key={user._id}>
                     {user._id !== selectedChat.groupAdmin._id && (
                       <UserBadgeItem
-                        key={user._id}
+                        // key={user._id}
                         user={user}
                         handleFunction={() => handleRemove(user)}
                       />

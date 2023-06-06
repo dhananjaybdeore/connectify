@@ -9,7 +9,7 @@ const accessChat = asyncHandler(async (req, res) => {
     console.log("UserId params not sent with request ");
     return res.sendStatus(400);
   }
-  var isChat = Chat.find({
+  var isChat = await Chat.find({
     isGroupChat: false,
     $and: [
       { users: { $elemMatch: { $eq: req.user._id } } },
@@ -21,7 +21,7 @@ const accessChat = asyncHandler(async (req, res) => {
   //? Populate is used because we have objectIDs in Chat model. So by using populate method, we can access the entire user or lastMessage from their individual collection
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
-    select: " name, email, pic ",
+    select: " name email pic ",
   });
   //Checking if they already have chats
   if (isChat.length > 0) {
@@ -60,7 +60,7 @@ const fetchChat = asyncHandler(async (req, res) => {
       .then(async (results) => {
         results = await User.populate(results, {
           path: "latestMessage.sender",
-          select: " name, email, pic ",
+          select: " name email pic ",
         });
         res.status(200).send(results);
       });
