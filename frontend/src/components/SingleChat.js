@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
 import {
-  Avatar,
   Box,
   Button,
   FormControl,
@@ -10,14 +9,11 @@ import {
   IconButton,
   Input,
   Spinner,
-  StepIndicator,
   Text,
   useToast,
 } from "@chakra-ui/react";
-// import { BiSend } from "react-icons/Bi";
 import { BiSend } from "react-icons/bi";
-
-import { ArrowBackIcon, ArrowRightIcon, CheckIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
@@ -25,6 +21,8 @@ import axios from "axios";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 import { io } from "socket.io-client";
+import Lottie from "react-lottie";
+import animationData from "../animations/typing.json";
 
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
@@ -36,7 +34,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [istyping, setIstyping] = useState(false);
   const toast = useToast();
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRation: "xMidYMid slice",
+    },
+  };
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -71,8 +79,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on("connection");
-    setSocketConnected(true);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => {
+      setIstyping(true);
+    });
+    socket.on("stop typing", () => {
+      setIstyping(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -95,6 +108,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const sendMessage = async (event) => {
     if ((event.key === "Enter" || event.key === undefined) && newMessage) {
       setSendButtonLoading(true);
+      socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
           headers: {
@@ -130,11 +144,34 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  //   // Typing indicator logic here
+  let typingTimeout = null;
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
-    // Typing indicator logic here
+    if (!socketConnected) return;
+
+    clearTimeout(typingTimeout);
+
+    if (e.target.value === "") {
+      if (typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    } else {
+      if (!typing) {
+        setTyping(true);
+        socket.emit("typing", selectedChat._id);
+      }
+
+      typingTimeout = setTimeout(() => {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }, 3000);
+    }
   };
+
   return (
     <>
       {selectedChat ? (
@@ -201,7 +238,36 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat messages={messages} />
+                <ScrollableChat
+                  messages={messages}
+                  // style={{ marginBottom: "20px", padding: "20px" }}
+                />
+                {istyping ? (
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "start",
+                      justifyContent: "start",
+                      width: "fit-content",
+                      marginLeft: "30px",
+                      // zIndex: "-1",
+                      // background: "transparent",
+                    }}
+                  >
+                    <Lottie
+                      options={defaultOptions}
+                      style={{
+                        padding: "0",
+                        margin: "5px",
+                      }}
+                      height="40px"
+                    />
+                  </span>
+                ) : (
+                  <span style={{ visibility: "hidden", height: "95px" }}>
+                    {/* not typing anything */}
+                  </span>
+                )}
               </div>
             )}
             <FormControl
@@ -210,8 +276,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               p={3}
               bg="#E8E8E8"
               display="flex"
-
-              // mt={3}
             >
               <Input
                 type="text"
