@@ -6,18 +6,33 @@ const { connDB } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const path = require("path");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 dotenv.config();
 connDB();
 const app = express();
 app.use(express.json()); // *to accept json data from frontend
-app.get("/", (req, res) => {
-  res.send("API Running Successfully");
-});
+// app.get("/", (req, res) => {
+//   res.send("API Running Successfully");
+// });
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+// !---------------- Deployement code----------------
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("API Running Successfully");
+  });
+}
+//!-------------End of Deployement code --------------
 
 app.use(notFound);
 app.use(errorHandler);
