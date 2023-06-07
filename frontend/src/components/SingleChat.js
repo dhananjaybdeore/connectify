@@ -28,7 +28,8 @@ const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { user, selectedChat, setSelectedChat, notification, setNotification } =
+    ChatState();
   const [messages, setMessages] = useState([]);
   const [sendButtonLoading, setSendButtonLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -92,13 +93,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
+  console.log(notification);
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        // give notification
+        // ?give notification
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -213,8 +219,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             display="flex"
             flexDir="column"
             justifyContent="flex-end"
-            // p={3}
-            // backgroudUrl="https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"
             bgImage="url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')"
             // bg="#E8E8E8"
             w="100%"
@@ -238,10 +242,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat
-                  messages={messages}
-                  // style={{ marginBottom: "20px", padding: "20px" }}
-                />
+                <ScrollableChat messages={messages} />
                 {istyping ? (
                   <span
                     style={{
@@ -250,8 +251,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                       justifyContent: "start",
                       width: "fit-content",
                       marginLeft: "30px",
-                      // zIndex: "-1",
-                      // background: "transparent",
                     }}
                   >
                     <Lottie
@@ -264,9 +263,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     />
                   </span>
                 ) : (
-                  <span style={{ visibility: "hidden", height: "95px" }}>
-                    {/* not typing anything */}
-                  </span>
+                  <></>
                 )}
               </div>
             )}
