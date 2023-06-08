@@ -54,7 +54,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/groupremove",
+        "https://connectify-ht7d.onrender.com/api/chat/groupremove",
         {
           chatId: selectedChat._id,
           userId: userToBeRemoved._id,
@@ -103,7 +103,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/groupremove",
+        "https://connectify-ht7d.onrender.com/api/chat/groupremove",
         {
           chatId: selectedChat._id,
           userId: user.data._id,
@@ -162,7 +162,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/groupadd",
+        "https://connectify-ht7d.onrender.com/api/chat/groupadd",
         {
           chatId: selectedChat._id,
           userId: userToBeAdded._id,
@@ -203,7 +203,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/rename",
+        "https://connectify-ht7d.onrender.com/api/chat/rename",
         {
           chatId: selectedChat._id,
           chatName: groupChatName,
@@ -238,7 +238,10 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
 
-      const { data } = await axios.get(`/api/user/?search=${search}`, config);
+      const { data } = await axios.get(
+        `https://connectify-ht7d.onrender.com/api/user/?search=${search}`,
+        config
+      );
       // console.log(data.length);
       setLoading(false);
       if (data.length == 0) {

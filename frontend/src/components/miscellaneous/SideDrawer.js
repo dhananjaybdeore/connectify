@@ -80,7 +80,10 @@ const SideDrawer = () => {
       };
       // console.log("search request sent");
 
-      const { data } = await axios.get(`/api/user/?search=${search}`, config);
+      const { data } = await axios.get(
+        `https://connectify-ht7d.onrender.com/api/user/?search=${search}`,
+        config
+      );
 
       // console.log("Search request done!!!");
 
@@ -114,7 +117,11 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.data.token}`,
         },
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      const { data } = await axios.post(
+        `https://connectify-ht7d.onrender.com/api/chat`,
+        { userId },
+        config
+      );
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
