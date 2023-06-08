@@ -116,7 +116,7 @@ const Signup = () => {
       //?Making an API call to register the user into the database
       axios
         .post(
-          "/api/user",
+          "https://connectify-ht7d.onrender.com/api/user",
           {
             name,
             email,
