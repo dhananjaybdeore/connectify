@@ -49,7 +49,7 @@ const server = http.listen(PORT, console.log(`Server started on port ${PORT}`));
 const io = require("socket.io")(server, {
   pingTimout: 60000,
   cors: {
-    origin: "https://connectify-frontend-qe0c.onrender.com/",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
