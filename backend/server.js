@@ -41,12 +41,16 @@ app.use(notFound);
 app.use(errorHandler);
 const PORT = process.env.PORT || 8000;
 
-const server = app.listen(PORT, console.log(`Server started on port ${PORT}`));
+var http = require("http").createServer(app); // added
+
+// const server = app.listen(PORT, console.log(`Server started on port ${PORT}`));
+const server = http.listen(PORT, console.log(`Server started on port ${PORT}`));
 
 const io = require("socket.io")(server, {
   pingTimout: 60000,
   cors: {
     origin: "https://connectify-frontend-qe0c.onrender.com/",
+    methods: ["GET", "POST"],
   },
 });
 io.on("connection", (socket) => {
