@@ -24,7 +24,8 @@ import { io } from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 //! To be changed
-const ENDPOINT = "http://localhost:8000";
+// const ENDPOINT = "http://localhost:8000";
+const ENDPOINT = "https://connectify-ht7d.onrender.com:8000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
