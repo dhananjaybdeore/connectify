@@ -23,7 +23,7 @@ import ScrollableChat from "./ScrollableChat";
 import { io } from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
-
+//! To be changed
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
