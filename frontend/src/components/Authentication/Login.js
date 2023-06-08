@@ -55,7 +55,7 @@ const Login = () => {
       };
       axios
         .post(
-          "/api/user/login",
+          "https://connectify-ht7d.onrender.com/api/user/login",
           {
             email,
             password,
