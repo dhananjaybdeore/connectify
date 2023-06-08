@@ -11,6 +11,9 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 dotenv.config();
 connDB();
 const app = express();
+var cors = require("cors");
+
+app.use(cors());
 app.use(express.json()); // *to accept json data from frontend
 // app.get("/", (req, res) => {
 //   res.send("API Running Successfully");
@@ -43,7 +46,7 @@ const server = app.listen(PORT, console.log(`Server started on port ${PORT}`));
 const io = require("socket.io")(server, {
   pingTimout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://connectify-ht7d.onrender.com/",
   },
 });
 io.on("connection", (socket) => {

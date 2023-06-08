@@ -49,6 +49,8 @@ const Login = () => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
         },
       };
       axios
