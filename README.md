@@ -12,4 +12,4 @@ Connectify - A Real-time Chat Application using MERN Stack
 • Ensured security and privacy by using JSON Web Tokens, and
   encrypting sensitive user information.
   
-• Technologies used- ReactJS, Node.js, Express
+• Technologies used- ReactJS, Node.js, Express.js, MongoDB, Socket.IO, ChakraUI, Cloudinary, Postman
