@@ -23,7 +23,7 @@ userSchema.pre("save", async function (next) {
   }
   //Hashing of password is done here
   this.password = await bcrypt.hash(this.password, 10);
-  this.email = await bcrypt.hash(this.email, 10);
+  // this.email = await bcrypt.hash(this.email, 10);
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
