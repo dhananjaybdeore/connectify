@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+
 const messageModel = mongoose.Schema(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -9,6 +11,23 @@ const messageModel = mongoose.Schema(
     timestamps: true,
   }
 );
+
+//! Edited
+messageModel.pre("save", async function (next) {
+  if (!this.isModefied) {
+    next();
+  }
+  this.content = await bcrypt.hash(this.content, 10);
+});
+//!Edited
+
+// messageModel.pre("save", async function (next) {
+//   if (!this.isModified) {
+//     next();
+//   }
+//   //Hashing of password is done here
+//   this.content = await bcrypt.hash(this.content, 10);
+// });
 
 const Message = mongoose.model("Message", messageModel);
 module.exports = Message;

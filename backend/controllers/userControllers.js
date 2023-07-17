@@ -65,7 +65,7 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-//* function to get all users
+//* function to get all users related to search keyword user entered
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
