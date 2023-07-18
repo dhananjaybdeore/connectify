@@ -9,6 +9,7 @@ import {
 } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
 import { Text } from "@chakra-ui/react";
+import cryptoJS from "crypto-js";
 
 const ScrollableChat = ({ messages }) => {
   const { user } = ChatState();
@@ -19,6 +20,25 @@ const ScrollableChat = ({ messages }) => {
     if (minutes < 10) minutes = "0" + minutes;
     if (hours < 10) hours = "0" + hours;
     return hours + ":" + minutes;
+  };
+  const decryptMessage = (encryptedMessage) => {
+    const decryptedBytes = cryptoJS.AES.decrypt(
+      encryptedMessage,
+      `${process.env.REACT_APP_ENCRYPTION_KEY}`
+    ).toString(cryptoJS.enc.Utf8);
+    return JSON.parse(decryptedBytes).newMessage;
+
+    // const data = {
+    //   decryptedBytes,
+    // };
+    // console.log(data);
+    // const message = data.newMessage;
+    // console.log(message); // Output: ghhh
+    // const info3 = JSON.parse(decryptedBytes);
+    // console.log(info3);
+    // const decryptedMessage = decryptedBytes.toString(cryptoJS.enc.Utf8);
+    // console.log(decryptedMessage);
+    // return decryptedMessage;
   };
   return (
     <ScrollableFeed>
@@ -50,7 +70,7 @@ const ScrollableChat = ({ messages }) => {
                 maxWidth: "75%",
               }}
             >
-              {m.content}
+              {decryptMessage(m.content)}
 
               <Text
                 width="100%"

@@ -18,6 +18,7 @@ import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import axios from "axios";
+import cryptoJS from "crypto-js";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 import { io } from "socket.io-client";
@@ -94,7 +95,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
-  console.log(notification);
+
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
@@ -125,10 +126,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
 
+        // setNewMessage()
+        // console.log(newMessage + "Dhanu");
+        //? Code to encrypt the message before storing it in DB
+        // const encryptionKey = `${process.env.REACT_APP_ENCRYPTION_KEY}`;
+
+        const encryptedMessage = cryptoJS.AES.encrypt(
+          // newMessage,
+          JSON.stringify({ newMessage }),
+          `${process.env.REACT_APP_ENCRYPTION_KEY}`
+        ).toString();
+        console.log(encryptedMessage);
+        //? Encryption code ends here
         const { data } = await axios.post(
           "https://connectify-ht7d.onrender.com/api/message",
           {
-            content: newMessage,
+            // content: newMessage,
+            content: encryptedMessage,
             chatId: selectedChat,
           },
           config
