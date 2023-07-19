@@ -112,6 +112,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
       } else {
         setMessages([...messages, newMessageReceived]);
+        setFetchAgain(!fetchAgain);
       }
     });
   });
@@ -151,6 +152,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           config
         );
         setSendButtonLoading(false);
+        setFetchAgain(!fetchAgain);
+
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
