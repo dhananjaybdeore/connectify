@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
-import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
+import cryptoJS from "crypto-js";
+
 import ChatLoading from "./ChatLoading";
-import { getSender } from "../config/ChatLogics";
+import { getSender, getSenderFull } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 
 const MyChats = ({ fetchAgain }) => {
@@ -41,6 +43,14 @@ const MyChats = ({ fetchAgain }) => {
     fetchChats();
     setLoggedUser(JSON.parse(localStorage.getItem("UserInfo")));
   }, [fetchAgain]);
+
+  const decryptMessage = (encryptedMessage) => {
+    const decryptedBytes = cryptoJS.AES.decrypt(
+      encryptedMessage,
+      `${process.env.REACT_APP_ENCRYPTION_KEY}`
+    ).toString(cryptoJS.enc.Utf8);
+    return JSON.parse(decryptedBytes).newMessage;
+  };
 
   return (
     <Box
@@ -90,17 +100,91 @@ const MyChats = ({ fetchAgain }) => {
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChat === chat ? "#c1c1c1" : "#E8E8E8"}
+                color="black"
                 px={3}
                 py={2}
                 borderRadius="lg"
                 key={chat._id}
               >
-                <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser.data, chat.users)
-                    : chat.chatName}
+                <Text fontWeight="bold" fontSize={{ base: "17px", lg: "18px" }}>
+                  {!chat.isGroupChat ? (
+                    <Box display="flex" flexDir="row" columnGap={2}>
+                      <Avatar
+                        size="m"
+                        background="purple"
+                        name={getSenderFull(loggedUser.data, chat.users).name}
+                        alt={getSenderFull(loggedUser.data, chat.users).name}
+                        src={getSenderFull(loggedUser.data, chat.users).pic}
+                        objectFit="scale-down"
+                        borderRadius="full"
+                        boxSize="55px"
+                      ></Avatar>
+                      <div>
+                        {getSender(loggedUser.data, chat.users)}
+                        <br></br>
+                        <span
+                          style={{
+                            color: "gray",
+                            fontSize: "15px",
+                          }}
+                        >
+                          {chat.latestMessage ? (
+                            <>
+                              <span
+                                style={{
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {chat.latestMessage.sender.name}:{" "}
+                              </span>
+                              {decryptMessage(chat.latestMessage.content)}
+                            </>
+                          ) : (
+                            "No messages here yet"
+                          )}
+                        </span>
+                      </div>
+                    </Box>
+                  ) : (
+                    <Box display="flex" flexDir="row" columnGap={2}>
+                      <Avatar
+                        size="m"
+                        background="gray"
+                        name={chat.chatName}
+                        alt={chat.chatName}
+                        src="https://cdn-icons-png.flaticon.com/512/2352/2352167.png"
+                        objectFit="scale-down"
+                        borderRadius="full"
+                        boxSize="55px"
+                      ></Avatar>
+                      <div>
+                        {chat.chatName}
+                        <br></br>
+                        <span
+                          style={{
+                            color: "gray",
+                            fontSize: "15px",
+                          }}
+                        >
+                          {chat.latestMessage ? (
+                            <>
+                              <span
+                                style={{
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {chat.latestMessage.sender.name}:{" "}
+                              </span>
+                              {decryptMessage(chat.latestMessage.content)}
+                            </>
+                          ) : (
+                            "No messages here yet"
+                          )}
+                        </span>
+                      </div>
+                    </Box>
+                  )}
                 </Text>
               </Box>
             ))}

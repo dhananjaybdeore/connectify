@@ -1,4 +1,4 @@
-import { ViewIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Button,
@@ -26,7 +26,7 @@ const ProfileModal = ({ user, children }) => {
       ) : (
         <IconButton
           display={{ base: "flex" }}
-          icon={<ViewIcon />}
+          icon={<InfoOutlineIcon />}
           onClick={onOpen}
         />
       )}
@@ -65,6 +65,7 @@ const ProfileModal = ({ user, children }) => {
             <Link href={user.pic} isExternal>
               <Avatar
                 size="xl"
+                background="purple"
                 cursor="pointer"
                 name={user.name}
                 alt={user.name}

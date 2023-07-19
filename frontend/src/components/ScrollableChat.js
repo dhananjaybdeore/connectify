@@ -27,18 +27,6 @@ const ScrollableChat = ({ messages }) => {
       `${process.env.REACT_APP_ENCRYPTION_KEY}`
     ).toString(cryptoJS.enc.Utf8);
     return JSON.parse(decryptedBytes).newMessage;
-
-    // const data = {
-    //   decryptedBytes,
-    // };
-    // console.log(data);
-    // const message = data.newMessage;
-    // console.log(message); // Output: ghhh
-    // const info3 = JSON.parse(decryptedBytes);
-    // console.log(info3);
-    // const decryptedMessage = decryptedBytes.toString(cryptoJS.enc.Utf8);
-    // console.log(decryptedMessage);
-    // return decryptedMessage;
   };
   return (
     <ScrollableFeed>

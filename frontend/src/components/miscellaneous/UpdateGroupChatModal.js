@@ -17,7 +17,7 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
-import { SettingsIcon, ViewIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon, SettingsIcon, ViewIcon } from "@chakra-ui/icons";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import axios from "axios";
@@ -272,7 +272,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     <>
       <IconButton
         display={{ base: "flex" }}
-        icon={<SettingsIcon />}
+        icon={<InfoOutlineIcon />}
         onClick={onOpen}
       />
 

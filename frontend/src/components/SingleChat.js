@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
 import {
+  Avatar,
   Box,
   Button,
   FormControl,
@@ -39,6 +40,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIstyping] = useState(false);
+  const [sender, setSender] = useState({});
+
   const toast = useToast();
   const defaultOptions = {
     loop: true,
@@ -136,7 +139,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           JSON.stringify({ newMessage }),
           `${process.env.REACT_APP_ENCRYPTION_KEY}`
         ).toString();
-        console.log(encryptedMessage);
+
         //? Encryption code ends here
         const { data } = await axios.post(
           "https://connectify-ht7d.onrender.com/api/message",
@@ -193,11 +196,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  useEffect(() => {
+    if (selectedChat) {
+      const senderTemp = getSenderFull(user.data, selectedChat.users);
+      setSender(senderTemp);
+    }
+  }, [selectedChat]);
+
   return (
     <>
       {selectedChat ? (
         <>
-          <Text
+          {/* {setSenderInState()} */}
+
+          <Box
             fontSize={{ base: "18px", md: "20px" }}
             pb={3}
             px={2}
@@ -214,14 +226,49 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             ></IconButton>
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user.data, selectedChat.users)}
-                <ProfileModal
-                  user={getSenderFull(user.data, selectedChat.users)}
-                />
+                <Box
+                  display="flex"
+                  justifyContent={{ base: "start" }}
+                  columnGap={5}
+                  alignItems="center"
+                >
+                  <Avatar
+                    size="m"
+                    background="purple"
+                    name={sender.name}
+                    alt={sender.name}
+                    src={sender.pic}
+                    objectFit="scale-down"
+                    borderRadius="full"
+                    border="2px"
+                    boxSize="50px"
+                  ></Avatar>
+
+                  {sender.name}
+                </Box>
+                <ProfileModal user={sender} />
               </>
             ) : (
               <>
-                {selectedChat.chatName}
+                <Box
+                  display="flex"
+                  justifyContent={{ base: "start" }}
+                  columnGap={5}
+                  alignItems="center"
+                >
+                  <Avatar
+                    size="m"
+                    background="gray"
+                    name={selectedChat.chatName}
+                    alt={selectedChat.chatName}
+                    src="https://cdn-icons-png.flaticon.com/512/2352/2352167.png"
+                    objectFit="scale-down"
+                    borderRadius="full"
+                    border="2px"
+                    boxSize="50px"
+                  ></Avatar>
+                  {selectedChat.chatName}
+                </Box>
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
@@ -229,7 +276,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 />
               </>
             )}
-          </Text>
+          </Box>
           <Box
             display="flex"
             flexDir="column"
