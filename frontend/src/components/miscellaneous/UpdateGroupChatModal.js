@@ -16,6 +16,7 @@ import {
   FormControl,
   Spinner,
   Text,
+  Avatar,
 } from "@chakra-ui/react";
 import { InfoOutlineIcon, SettingsIcon, ViewIcon } from "@chakra-ui/icons";
 import { ChatState } from "../../Context/ChatProvider";
@@ -311,10 +312,15 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                   fontSize={12}
                   color="white"
                   cursor="pointer"
-                  display="inline"
+                  display="flex"
+                  columnGap={2}
                   width="fit-content"
                   p="auto"
                 >
+                  <Avatar
+                    src={selectedChat.groupAdmin.pic}
+                    boxSize="20px"
+                  ></Avatar>
                   {selectedChat.groupAdmin.name}
                 </Text>
               </Box>
@@ -331,6 +337,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                       <UserBadgeItem
                         // key={user._id}
                         user={user}
+
                         handleFunction={() => handleRemove(user)}
                       />
                     )}

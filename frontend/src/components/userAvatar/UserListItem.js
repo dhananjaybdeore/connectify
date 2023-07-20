@@ -27,6 +27,7 @@ const UserListItem = ({ user, handleFunction }) => {
         cursor="pointer"
         name={user.name}
         src={user.pic}
+        background="purple"
       />
       <Box>
         <Text>{user.name}</Text>

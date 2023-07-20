@@ -107,7 +107,7 @@ const MyChats = ({ fetchAgain }) => {
                 borderRadius="lg"
                 key={chat._id}
               >
-                <Text fontWeight="bold" fontSize={{ base: "17px", lg: "18px" }}>
+                <Box fontWeight="bold" fontSize={{ base: "17px", lg: "18px" }}>
                   {!chat.isGroupChat ? (
                     <Box display="flex" flexDir="row" columnGap={2}>
                       <Avatar
@@ -185,7 +185,7 @@ const MyChats = ({ fetchAgain }) => {
                       </div>
                     </Box>
                   )}
-                </Text>
+                </Box>
               </Box>
             ))}
           </Stack>

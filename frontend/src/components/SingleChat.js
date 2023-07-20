@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
 import {
@@ -41,6 +41,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [istyping, setIstyping] = useState(false);
   const [sender, setSender] = useState({});
+  const inputRef = useRef();
 
   const toast = useToast();
   const defaultOptions = {
@@ -97,6 +98,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
+    // console.log(inputRef.current);
+    // inputRef.current.focus();
   }, [selectedChat]);
 
   useEffect(() => {
@@ -249,7 +252,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
                   {sender.name}
                 </Box>
-                <ProfileModal user={sender} />
+                <ProfileModal user={sender} boxSize={10} />
               </>
             ) : (
               <>
@@ -352,6 +355,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 placeholder="Type a message"
                 value={newMessage}
                 onChange={typingHandler}
+                autoFocus={true}
+                ref={inputRef}
               />
               <Button onClick={sendMessage} isLoading={sendButtonLoading}>
                 <Icon as={BiSend}></Icon>

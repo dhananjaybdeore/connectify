@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const ProfileModal = ({ user, children }) => {
+const ProfileModal = ({ user, children, boxSize }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -28,6 +28,10 @@ const ProfileModal = ({ user, children }) => {
           display={{ base: "flex" }}
           icon={<InfoOutlineIcon />}
           onClick={onOpen}
+          boxSize={boxSize}
+          // padding='0px'
+          // width="10%"
+          // size=""
         />
       )}
       <Modal size="lg" isOpen={isOpen} onClose={onClose} isCentered>
